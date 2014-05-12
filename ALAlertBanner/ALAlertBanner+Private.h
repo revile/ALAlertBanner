@@ -56,7 +56,6 @@
 @property (nonatomic) BOOL isScheduledToHide;
 @property (nonatomic, copy) void(^tappedBlock)(ALAlertBanner *alertBanner);
 @property (nonatomic) NSTimeInterval fadeInDuration;
-@property (nonatomic) BOOL showShadow;
 @property (nonatomic) BOOL shouldForceHide;
 
 - (void)showAlertBanner;

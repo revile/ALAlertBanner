@@ -178,13 +178,6 @@
     NSMutableArray *bannersArray = view.alertBanners;
     
     [bannersArray addObject:alertBanner];
-    NSArray *bannersInSamePosition = [bannersArray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", alertBanner.position]];
-    
-    //set shadow before pushing other banners, because the banner push may be delayed by the fade in duration (which is set at the same time as the shadow) on iOS7
-    if (!alertBanner.isFlat) {
-        alertBanner.showShadow = (bannersInSamePosition.count > 1 ? NO : YES);
-    }
-
     
     for (ALAlertBanner *banner in bannersToPush) {
         if (banner.position == alertBanner.position) {
@@ -218,15 +211,6 @@
 
         for (ALAlertBanner *banner in bannersToPush)
             [banner pushAlertBanner:-alertBanner.frame.size.height forward:NO delay:0.f];
-    }
-    
-    else if (index == 0) {
-        if (bannersInSamePosition.count > 1) {
-            ALAlertBanner *nextAlertBanner = (ALAlertBanner *)[bannersInSamePosition objectAtIndex:1];
-            [nextAlertBanner setShowShadow:YES];
-        }
-        
-        [alertBanner setShowShadow:NO];
     }
 }
 

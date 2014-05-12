@@ -124,8 +124,10 @@
 }
 
 - (void)showAlertBannerInView:(UIButton *)button {
+    NSArray *arrayOfStyles = @[[ALAlertBannerStyle defaultStyleFailure], [ALAlertBannerStyle defaultStyleNotify], [ALAlertBannerStyle defaultStyleSuccess], [ALAlertBannerStyle defaultStyleWarning]];
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
+    NSUInteger randomIndex = arc4random_uniform(4);
+    ALAlertBannerStyle *randomStyle = arrayOfStyles[randomIndex];
     ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[AppDelegate randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
         NSLog(@"tapped!");
         [alertBanner hide];
@@ -138,7 +140,9 @@
 
 - (void)showAlertBannerInWindow:(UIButton *)button {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
+    NSArray *arrayOfStyles = @[[ALAlertBannerStyle defaultStyleFailure], [ALAlertBannerStyle defaultStyleNotify], [ALAlertBannerStyle defaultStyleSuccess], [ALAlertBannerStyle defaultStyleWarning]];
+    NSUInteger randomIndex = arc4random_uniform(4);
+    ALAlertBannerStyle *randomStyle = arrayOfStyles[randomIndex];
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
     ALAlertBanner *banner = [ALAlertBanner alertBannerForView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[AppDelegate randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
         NSLog(@"tapped!");
