@@ -24,8 +24,6 @@
 
 #import "ALAlertBanner.h"
 
-#define AL_IOS_7_OR_GREATER [UIDevice iOSVersion] >= 7.0
-
 @interface UIDevice (ALSystemVersion)
 
 + (float)iOSVersion;

@@ -50,23 +50,8 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 
 #define AL_DEVICE_ANIMATION_DURATION UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? kRotationDurationIPad : kRotationDurationIphone;
 
-//macros referenced from MBProgressHUD. cheers to @matej
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
-    #define AL_SINGLELINE_TEXT_HEIGHT(text, font) [text length] > 0 ? [text sizeWithAttributes:nil].height : 0.f;
-    #define AL_MULTILINE_TEXT_HEIGHT(text, font, maxSize, mode) [text length] > 0 ? [text boundingRectWithSize:maxSize \
-                                                                                                       options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) \
-                                                                                                    attributes:nil \
-                                                                                                       context:NULL].size.height : 0.f;
-#else
-    #define AL_SINGLELINE_TEXT_HEIGHT(text, font) [text length] > 0 ? [text sizeWithFont:font].height : 0.f;
-    #define AL_MULTILINE_TEXT_HEIGHT(text, font, maxSize, mode) [text length] > 0 ? [text sizeWithFont:font \
-                                                                                     constrainedToSize:maxSize \
-                                                                                         lineBreakMode:mode].height : 0.f;
-#endif
-
 # pragma mark -
 # pragma mark Helper Categories
-
 
 //darkerColor referenced from http://stackoverflow.com/questions/11598043/get-slightly-lighter-and-darker-color-from-uicolor
 @implementation UIColor (LightAndDark)
@@ -96,8 +81,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 @implementation UIApplication (ALApplicationBarHeights)
 
 + (CGFloat)navigationBarHeight {
-    //if we're on iOS7 or later, return new landscape navBar height
-    if (AL_IOS_7_OR_GREATER && UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) && [UIDevice currentDevice].userInterfaceIdiom != UIUserInterfaceIdiomPad)
+    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) && [UIDevice currentDevice].userInterfaceIdiom != UIUserInterfaceIdiomPad)
         return kNavigationBarHeightiOS7Landscape;
     
     return kNavigationBarHeightDefault;
@@ -464,28 +448,26 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     BOOL isSuperviewKindOfWindow = ([superview isKindOfClass:[UIWindow class]]);
     
     CGSize maxLabelSize = CGSizeMake(superview.bounds.size.width - (kMargin*3) - self.styleImageView.image.size.width, CGFLOAT_MAX);
-    CGFloat titleLabelHeight = AL_SINGLELINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font);
-    CGFloat subtitleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.subtitleLabel.text, self.subtitleLabel.font, maxLabelSize, self.subtitleLabel.lineBreakMode);
+    CGFloat titleLabelHeight = [self.titleLabel sizeThatFits:maxLabelSize].height;
+    CGFloat subtitleLabelHeight = [self.subtitleLabel sizeThatFits:maxLabelSize].height;
     CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil || self.titleLabel.text == nil ? kMargin*2 : kMargin*2.5);
     
     CGRect frame = CGRectMake(0.f, 0.f, superview.bounds.size.width, heightForSelf);
     CGFloat initialYCoord = 0.f;
     switch (self.position) {
-        case ALAlertBannerPositionTop:
+        case ALAlertBannerPositionTop: {
             initialYCoord = -heightForSelf;
             if (isSuperviewKindOfWindow) initialYCoord += [UIApplication statusBarHeight];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-            if (AL_IOS_7_OR_GREATER) {
-                id nextResponder = [self nextAvailableViewController:self];
-                if (nextResponder) {
-                    UIViewController *vc = nextResponder;
-                    if (!(vc.automaticallyAdjustsScrollViewInsets && [vc.view isKindOfClass:[UIScrollView class]])) {
-                        initialYCoord += [vc topLayoutGuide].length;
-                    }
+            
+            id nextResponder = [self nextAvailableViewController:self];
+            if (nextResponder) {
+                UIViewController *vc = nextResponder;
+                if (!(vc.automaticallyAdjustsScrollViewInsets && [vc.view isKindOfClass:[UIScrollView class]])) {
+                    initialYCoord += [vc topLayoutGuide].length;
                 }
             }
-#endif
             break;
+        }
         case ALAlertBannerPositionBottom:
             initialYCoord = superview.bounds.size.height;
             break;
@@ -511,8 +493,8 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 
 - (void)updateSizeAndSubviewsAnimated:(BOOL)animated {
     CGSize maxLabelSize = CGSizeMake(self.superview.bounds.size.width - (kMargin*3.f) - self.styleImageView.image.size.width, CGFLOAT_MAX);
-    CGFloat titleLabelHeight = AL_SINGLELINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font);
-    CGFloat subtitleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.subtitleLabel.text, self.subtitleLabel.font, maxLabelSize, self.subtitleLabel.lineBreakMode);
+    CGFloat titleLabelHeight = [self.titleLabel sizeThatFits:maxLabelSize].height;
+    CGFloat subtitleLabelHeight = [self.subtitleLabel sizeThatFits:maxLabelSize].height;
     CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil || self.titleLabel.text == nil ? kMargin*2.f : kMargin*2.5f);
     
     CFTimeInterval boundsAnimationDuration = AL_DEVICE_ANIMATION_DURATION;
