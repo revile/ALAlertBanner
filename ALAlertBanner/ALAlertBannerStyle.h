@@ -14,7 +14,8 @@
 @property (strong, nonatomic) UIImage *imageIcon;
 @property (strong, nonatomic) UIFont *fontTitleLabel;
 @property (strong, nonatomic) UIFont *fontSubtitleLabel;
-@property (strong, nonatomic) UIColor *colorText;
+@property (strong, nonatomic) UIColor *colorTitle;
+@property (strong, nonatomic) UIColor *colorMessage;
 
 + (ALAlertBannerStyle *)defaultStyleSuccess;
 + (ALAlertBannerStyle *)defaultStyleFailure;

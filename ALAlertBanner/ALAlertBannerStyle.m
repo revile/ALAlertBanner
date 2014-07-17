@@ -48,7 +48,8 @@
     if (self) {
         self.fontTitleLabel = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13.f];
         self.fontSubtitleLabel = [UIFont fontWithName:@"HelveticaNeue" size:10.f];
-        self.colorText = [UIColor colorWithWhite:1.f alpha:0.9f];
+        self.colorTitle = [UIColor colorWithWhite:1.f alpha:0.9f];
+        self.colorMessage = [UIColor colorWithWhite:1.f alpha:0.9f];
     }
     
     return self;
